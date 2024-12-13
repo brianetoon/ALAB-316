@@ -1,9 +1,24 @@
 // Menu data structure
 var menuLinks = [
-  { text: 'about', href: '/about' },
-  { text: 'catalog', href: '/catalog' },
-  { text: 'orders', href: '/orders' },
-  { text: 'account', href: '/account' },
+  {text: 'about', href: '/about'},
+
+  {text: 'catalog', href: '#', 
+    subLinks: [
+      {text: 'all', href: '/catalog/all'},
+      {text: 'top selling', href: '/catalog/top'},
+      {text: 'search', href: '/catalog/search'},
+    ]
+},
+
+  {text: 'orders', href: '#' , subLinks: [
+    {text: 'new', href: '/orders/new'},
+    {text: 'pending', href: '/orders/pending'},
+    {text: 'history', href: '/orders/history'},
+  ]},
+  {text: 'account', href: '#', subLinks: [
+    {text: 'profile', href: '/account/profile'},
+    {text: 'sign out', href: '/account/signout'},
+  ]},
 ];
 
 // DOM MANIPULATION (PART ONE)
@@ -64,7 +79,7 @@ menuLinks.forEach(link => {
 // PART 3 - CREATING THE SUBMENU
 
 // step 1 
-const subMenuEl =  document.querySelector("#sub-menu");
+const subMenuEl = document.querySelector("#sub-menu");
 
 // step 2
 subMenuEl.style.height = "100%";
@@ -78,5 +93,63 @@ subMenuEl.classList.add("flex-around");
 // step 5 - hide subMenuEl
 subMenuEl.style.position = "absolute";
 subMenuEl.style.top = "0";
+
+// PART 4 - ADDING MENU INTERACTION
+
+// step 1 
+const topMenuLinks = document.querySelectorAll("#top-menu a");
+
+// step 2
+topMenuEl.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  // cached for later
+  const link = e.target;
+
+  if (e.target.localName !== "a") {
+    return;
+  }
+
+  if (e.target.classList.contains("active")) {
+    e.target.classList.remove("active");
+  } else {
+    e.target.classList.add("active");
+  }
+
+  topMenuLinks.forEach((link) => {
+    if (link.textContent !== e.target.textContent) {
+      link.classList.remove("active");
+    }
+  });
+
+  // console.log(e.target.textContent)
+
+  menuLinks.forEach(link => {
+    if (link.text === e.target.textContent) {
+      // console.log(link.subLinks);
+      if (link.subLinks) {
+        subMenuEl.style.top = "100%";
+        buildSubmenu(link.subLinks);
+      } else {
+        subMenuEl.style.top = "0";
+      }
+    }
+  })
+
+});
+
+function buildSubmenu(subLinks) {
+  subMenuEl.innerHTML = '';
+
+  // iterate over sublinks
+  subLinks.forEach(link => {
+    const a = document.createElement("a");
+    a.setAttribute("href", link.href);
+    a.textContent = link.text;
+
+    subMenuEl.appendChild(a);
+  });
+
+}
 
 
