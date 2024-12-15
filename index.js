@@ -1,24 +1,29 @@
 // Menu data structure
 var menuLinks = [
-  {text: 'about', href: '/about'},
+  { text: 'about', href: '/about'},
 
-  {text: 'catalog', href: '#', 
+  { text: 'catalog', href: '#', 
     subLinks: [
-      {text: 'all', href: '/catalog/all'},
-      {text: 'top selling', href: '/catalog/top'},
-      {text: 'search', href: '/catalog/search'},
+      { text: 'all', href: '/catalog/all' },
+      { text: 'top selling', href: '/catalog/top' },
+      { text: 'search', href: '/catalog/search' },
     ]
-},
+  },
 
-  {text: 'orders', href: '#' , subLinks: [
-    {text: 'new', href: '/orders/new'},
-    {text: 'pending', href: '/orders/pending'},
-    {text: 'history', href: '/orders/history'},
-  ]},
-  {text: 'account', href: '#', subLinks: [
-    {text: 'profile', href: '/account/profile'},
-    {text: 'sign out', href: '/account/signout'},
-  ]},
+  { text: 'orders', href: '#' , 
+    subLinks: [
+      { text: 'new', href: '/orders/new' },
+      { text: 'pending', href: '/orders/pending' },
+      { text: 'history', href: '/orders/history' },
+    ]
+  },
+  
+  { text: 'account', href: '#', 
+    subLinks: [
+      { text: 'profile', href: '/account/profile' },
+      { text: 'sign out', href: '/account/signout' },
+    ]
+  },
 ];
 
 // DOM MANIPULATION (PART ONE)
@@ -69,7 +74,7 @@ menuLinks.forEach(link => {
 
 // DOM MANIPULATION (PART TWO)
 
-// part 1 - review
+// PART 1 - REVIEW
 // done
 
 // PART 2 - ADDING ADDITIONAL HTML AND CSS
@@ -90,16 +95,14 @@ subMenuEl.style.backgroundColor = "var(--sub-menu-bg)";
 // step 4
 subMenuEl.classList.add("flex-around");
 
-// step 5 - hide subMenuEl
+// step 5 
 subMenuEl.style.position = "absolute";
 subMenuEl.style.top = "0";
 
 // PART 4 - ADDING MENU INTERACTION
 
-// step 1 
 const topMenuLinks = document.querySelectorAll("#top-menu a");
 
-// step 2
 topMenuEl.addEventListener("click", (e) => {
   e.preventDefault();
 
@@ -122,11 +125,10 @@ topMenuEl.addEventListener("click", (e) => {
     }
   });
 
-  // console.log(e.target.textContent)
+  // PART 5 - ADDING SUBMENU INTERACTION
 
   menuLinks.forEach(link => {
     if (link.text === e.target.textContent) {
-      // console.log(link.subLinks);
       if (link.subLinks) {
         subMenuEl.style.top = "100%";
         buildSubmenu(link.subLinks);
@@ -134,8 +136,11 @@ topMenuEl.addEventListener("click", (e) => {
         subMenuEl.style.top = "0";
       }
     }
-  })
+  });
 
+  if (e.target.textContent === "about") {
+    title.textContent = e.target.textContent;
+  }
 });
 
 function buildSubmenu(subLinks) {
@@ -149,7 +154,20 @@ function buildSubmenu(subLinks) {
 
     subMenuEl.appendChild(a);
   });
-
 }
 
+subMenuEl.addEventListener("click", e => {
+  e.preventDefault();
 
+  if (e.target.localName !== "a") {
+    return;
+  }
+
+  subMenuEl.style.top = "0";
+
+  topMenuLinks.forEach((link) => {
+    link.classList.remove("active");
+  });
+
+  title.textContent = e.target.textContent;
+});
